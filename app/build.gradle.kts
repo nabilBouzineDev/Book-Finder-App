@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.nabilbdev.bookshelf"
+    namespace = "com.nabilbdev.bookfinder"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.nabilbdev.bookshelf"
+        applicationId = "com.nabilbdev.bookfinder"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

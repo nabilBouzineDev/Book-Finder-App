@@ -1,4 +1,4 @@
-package com.nabilbdev.bookshelf
+package com.nabilbdev.bookfinder
 
 import org.junit.Test
 
