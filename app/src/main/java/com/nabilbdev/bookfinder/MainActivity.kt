@@ -7,19 +7,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.nabilbdev.bookfinder.ui.theme.BookshelfTheme
+import com.nabilbdev.bookfinder.ui.BookFinderApp
+import com.nabilbdev.bookfinder.ui.screens.BookFinderViewModel
+import com.nabilbdev.bookfinder.ui.theme.BookFinderTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            BookshelfTheme {
+            BookFinderTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // code here ...
+                    val bookFinderViewModel = BookFinderViewModel()
+                    BookFinderApp(
+                        bookFinderViewModel = bookFinderViewModel
+                    )
                 }
             }
         }
