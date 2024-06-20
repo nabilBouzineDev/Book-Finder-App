@@ -33,7 +33,7 @@ interface BookFinderApiService {
     ): BookResponse
 
     @GET("volumes/{id}")
-    suspend fun getVolumeInfo(
+    suspend fun getSpecificVolumeInfo(
         @Path("id") id: String,
         @Query("key") key: String = BuildConfig.API_KEY
     ): Item

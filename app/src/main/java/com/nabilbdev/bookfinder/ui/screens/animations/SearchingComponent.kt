@@ -27,7 +27,7 @@ fun SearchingComponent() {
 @Composable
 fun SearchingAnimation() {
     val composition by rememberLottieComposition(
-        spec = LottieCompositionSpec.RawRes(R.raw.searching)
+        spec = LottieCompositionSpec.RawRes(R.raw.search)
     )
 
     LottieAnimation(

@@ -32,40 +32,35 @@ class BookFinderViewModel : ViewModel() {
     var bookFinderUiState: BookFinderUiState by mutableStateOf(BookFinderUiState.Loading)
         private set
 
-    init {
-        getBooksInfoByQuery(query = "")
-    }
 
     fun showHomeScreen() {
         isShowHomeScreen = true
     }
 
     fun getBooksInfoByQuery(query: String) {
-        if (query.isNotBlank()) {
-            viewModelScope.launch {
-                bookFinderUiState = BookFinderUiState.Loading
-                Log.d("BookFinder", "Loading: ${bookFinderUiState::class.simpleName}")
-                bookFinderUiState = try {
-                    val book =
-                        BookFinderApi.retrofitService.getAllVolumes(q = query, maxResult = "10")
-                    BookFinderUiState.Success(
-                        "About ${book.totalItems} Books..."
-                    )
-                } catch (e: IOException) {
-                    BookFinderUiState.Error(
-                        message = "Sorry! We can't find your $query! Try again later."
-                    )
-                } catch (e: HttpException) {
-                    BookFinderUiState.Error(
-                        message = "Oops! Something went wrong!"
-                    )
-                } catch (e: SerializationException) {
-                    BookFinderUiState.Error(
-                        message = "Oops! Something is messing"
-                    )
-                }
-                Log.d("BookFinder", "Error or Success: ${bookFinderUiState::class.simpleName}")
+        viewModelScope.launch {
+            bookFinderUiState = BookFinderUiState.Loading
+            Log.d("BookFinder", "Loading: ${bookFinderUiState::class.simpleName}")
+            bookFinderUiState = try {
+                val book =
+                    BookFinderApi.retrofitService.getAllVolumes(q = query, maxResult = "10")
+                BookFinderUiState.Success(
+                    "About ${book.totalItems} Books..."
+                )
+            } catch (e: IOException) {
+                BookFinderUiState.Error(
+                    message = "Oops! Check your network connection. Try Again!"
+                )
+            } catch (e: HttpException) {
+                BookFinderUiState.Error(
+                    message = "Oops! Something went wrong!"
+                )
+            } catch (e: SerializationException) {
+                BookFinderUiState.Error(
+                    message = "Oops! Something is messing!"
+                )
             }
+            Log.d("BookFinder", "Error or Success: ${bookFinderUiState::class.simpleName}")
         }
     }
 }

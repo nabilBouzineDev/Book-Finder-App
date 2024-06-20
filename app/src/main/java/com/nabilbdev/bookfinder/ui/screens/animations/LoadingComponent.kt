@@ -1,6 +1,7 @@
 package com.nabilbdev.bookfinder.ui.screens.animations
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
@@ -16,19 +17,24 @@ import com.nabilbdev.bookfinder.R
 @Composable
 fun LoadingComponent() {
     Box(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        val composition by rememberLottieComposition(
-            spec = LottieCompositionSpec.RawRes(R.raw.loading)
-        )
-
-        LottieAnimation(
-            composition = composition,
-            iterations = LottieConstants.IterateForever,
-            modifier = Modifier
-                .fillMaxWidth(0.5f)
-        )
+        LoadingAnimation()
     }
+}
+
+@Composable
+fun LoadingAnimation() {
+    val composition by rememberLottieComposition(
+        spec = LottieCompositionSpec.RawRes(R.raw.loading)
+    )
+
+    LottieAnimation(
+        composition = composition,
+        iterations = LottieConstants.IterateForever,
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.5f)
+    )
 }
