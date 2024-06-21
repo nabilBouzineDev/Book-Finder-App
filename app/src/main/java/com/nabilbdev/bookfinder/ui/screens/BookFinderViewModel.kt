@@ -1,13 +1,17 @@
 package com.nabilbdev.bookfinder.ui.screens
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import coil.network.HttpException
-import com.nabilbdev.bookfinder.network.BookFinderApi
+import com.nabilbdev.bookfinder.BookFinderApplication
+import com.nabilbdev.bookfinder.data.BookFinderRepository
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationException
 import okio.IOException
@@ -24,7 +28,7 @@ sealed interface BookFinderUiState {
     ) : BookFinderUiState
 }
 
-class BookFinderViewModel : ViewModel() {
+class BookFinderViewModel(private val bookFinderRepository: BookFinderRepository) : ViewModel() {
 
     var isShowHomeScreen: Boolean by mutableStateOf(false)
         private set
@@ -40,16 +44,17 @@ class BookFinderViewModel : ViewModel() {
     fun getBooksInfoByQuery(query: String) {
         viewModelScope.launch {
             bookFinderUiState = BookFinderUiState.Loading
-            Log.d("BookFinder", "Loading: ${bookFinderUiState::class.simpleName}")
             bookFinderUiState = try {
-                val book =
-                    BookFinderApi.retrofitService.getAllVolumes(q = query, maxResult = "10")
+                val bookListSize = bookFinderRepository.getAllVolumes(
+                    query = query,
+                    maxResult = "10"
+                )
                 BookFinderUiState.Success(
-                    "About ${book.totalItems} Books..."
+                    "About ${bookListSize.totalItems} Books..."
                 )
             } catch (e: IOException) {
                 BookFinderUiState.Error(
-                    message = "Oops! Check your network connection. Try Again!"
+                    message = "Oops! Please, check your network!"
                 )
             } catch (e: HttpException) {
                 BookFinderUiState.Error(
@@ -60,7 +65,16 @@ class BookFinderViewModel : ViewModel() {
                     message = "Oops! Something is messing!"
                 )
             }
-            Log.d("BookFinder", "Error or Success: ${bookFinderUiState::class.simpleName}")
+        }
+    }
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[APPLICATION_KEY] as BookFinderApplication)
+                val bookFinderRepository = application.container.bookFinderRepository
+                BookFinderViewModel(bookFinderRepository = bookFinderRepository)
+            }
         }
     }
 }
