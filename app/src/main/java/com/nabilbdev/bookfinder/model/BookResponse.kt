@@ -17,16 +17,16 @@ data class Item(
 
 @Serializable
 data class VolumeInfo(
-    val authors: List<String> = listOf("Author  not available"),
+    val authors: List<String> = listOf("Unknown Author"),
     val averageRating: Double = 0.0,
-    val categories: List<String> = listOf("Category not available"),
+    val categories: List<String> = listOf("Undefined"),
     val description: String = "Description not available",
     val imageLinks: ImageLinks = ImageLinks(
         smallThumbnail = "Image not found!",
         thumbnail = "Image not found!"
     ),
     val previewLink: String = "Preview not found!",
-    val ratingsCount: Int = 0,
+    val publishedDate: String = "Date not available",
     val title: String = "Title not available"
 )
 

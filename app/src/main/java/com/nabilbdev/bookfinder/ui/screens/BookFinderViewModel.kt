@@ -12,6 +12,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import coil.network.HttpException
 import com.nabilbdev.bookfinder.BookFinderApplication
 import com.nabilbdev.bookfinder.data.BookFinderRepository
+import com.nabilbdev.bookfinder.model.BookResponse
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationException
 import okio.IOException
@@ -19,7 +20,7 @@ import okio.IOException
 sealed interface BookFinderUiState {
 
     data class Success(
-        val response: String
+        val response: BookResponse
     ) : BookFinderUiState
 
     data object Loading : BookFinderUiState
@@ -30,12 +31,11 @@ sealed interface BookFinderUiState {
 
 class BookFinderViewModel(private val bookFinderRepository: BookFinderRepository) : ViewModel() {
 
-    var isShowHomeScreen: Boolean by mutableStateOf(false)
-        private set
-
     var bookFinderUiState: BookFinderUiState by mutableStateOf(BookFinderUiState.Loading)
         private set
 
+    var isShowHomeScreen: Boolean by mutableStateOf(false)
+        private set
 
     fun showHomeScreen() {
         isShowHomeScreen = true
@@ -45,12 +45,12 @@ class BookFinderViewModel(private val bookFinderRepository: BookFinderRepository
         viewModelScope.launch {
             bookFinderUiState = BookFinderUiState.Loading
             bookFinderUiState = try {
-                val bookListSize = bookFinderRepository.getAllVolumes(
+                val bookList = bookFinderRepository.getAllVolumes(
                     query = query,
                     maxResult = "10"
                 )
                 BookFinderUiState.Success(
-                    "About ${bookListSize.totalItems} Books..."
+                    bookList
                 )
             } catch (e: IOException) {
                 BookFinderUiState.Error(
