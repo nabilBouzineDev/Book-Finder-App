@@ -1,4 +1,4 @@
-package com.nabilbdev.bookfinder.ui.screens.bookinfo
+package com.nabilbdev.bookfinder.ui.screens.singlebook
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme

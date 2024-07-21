@@ -12,7 +12,7 @@ interface BookFinderApiService {
     @GET("volumes")
     suspend fun getAllVolumes(
         @Query("q") q: String,
-        @Query("maxResult") maxResult: String,
+        @Query("startIndex") startIndex: Int,
         @Query("key") key: String = BuildConfig.API_KEY
     ): BookResponse
 

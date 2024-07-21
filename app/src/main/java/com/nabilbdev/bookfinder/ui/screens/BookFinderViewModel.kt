@@ -1,6 +1,7 @@
 package com.nabilbdev.bookfinder.ui.screens
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -37,20 +38,44 @@ class BookFinderViewModel(private val bookFinderRepository: BookFinderRepository
     var isShowHomeScreen: Boolean by mutableStateOf(false)
         private set
 
+    var takeUserInputQuery: String by mutableStateOf("")
+        private set
+
+    var pageNumber: Int by mutableIntStateOf(0)
+        private set
+
+    fun takeUserQuery(query: String) {
+        takeUserInputQuery = query
+    }
+
     fun showHomeScreen() {
         isShowHomeScreen = true
     }
 
-    fun getBooksInfoByQuery(query: String) {
+    fun getBooksInfoByQuery() {
         viewModelScope.launch {
             bookFinderUiState = BookFinderUiState.Loading
             bookFinderUiState = try {
-                val bookList = bookFinderRepository.getAllVolumes(
-                    query = query,
-                    maxResult = "10"
+                launch {
+
+                }
+
+                // Call 2 request for more than 10 books items in Google Book API
+                val firstBookItems = bookFinderRepository.getAllVolumes(
+                    query = takeUserInputQuery,
+                    startIndex = pageNumber
                 )
+                val secondBookItems = bookFinderRepository.getAllVolumes(
+                    query = takeUserInputQuery,
+                    startIndex = pageNumber + 10
+                )
+
                 BookFinderUiState.Success(
-                    bookList
+                    BookResponse(
+                        kind = firstBookItems.kind,
+                        items = firstBookItems.items + secondBookItems.items,
+                        totalItems = firstBookItems.totalItems + secondBookItems.totalItems
+                    )
                 )
             } catch (e: IOException) {
                 BookFinderUiState.Error(

@@ -1,13 +1,12 @@
-package com.nabilbdev.bookfinder.ui.screens.bookinfo
+package com.nabilbdev.bookfinder.ui.screens.singlebook
 
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -22,10 +21,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.nabilbdev.bookfinder.ui.theme.BookFinderTheme
+import com.nabilbdev.bookfinder.ui.components.ExpandableText
 
 @Composable
 fun BookInfoScreen(
@@ -47,20 +48,6 @@ fun BookInfoScreen(
             .verticalScroll(rememberScrollState())
 
     ) {
-        /** UI Plan
-         * Column ✔
-         *   Box ✔
-         *       Card Image ✔
-         *       Column ✔
-         *           Title ✔
-         *           Row ✔
-         *               Rating ✔
-         *           Card Category ✔
-         *   Column ✔
-         *       Description Label ✔
-         *       Text ✔
-         *   Button ✔
-         */
         BookInfoContent(
             image = image,
             title = title,
@@ -134,10 +121,12 @@ fun BookDescription(
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.titleMedium
         )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
+        ExpandableText(
             text = description,
-            style = MaterialTheme.typography.bodyMedium
+            maxLines = 3,
+            textAlign = TextAlign.Start,
+            style = MaterialTheme.typography.bodyMedium,
+            paddingValues = PaddingValues(top = 16.dp)
         )
     }
 }

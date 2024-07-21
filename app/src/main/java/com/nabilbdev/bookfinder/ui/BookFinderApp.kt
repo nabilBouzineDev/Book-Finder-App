@@ -83,7 +83,8 @@ fun BookFinderApp(
                         if (!searchHistory.contains(query))
                             searchHistory.add(0, query)
 
-                        bookFinderViewModel.getBooksInfoByQuery(query)
+                        bookFinderViewModel.takeUserQuery(query)
+                        bookFinderViewModel.getBooksInfoByQuery()
                         bookFinderViewModel.showHomeScreen()
                         active = false
                     }
