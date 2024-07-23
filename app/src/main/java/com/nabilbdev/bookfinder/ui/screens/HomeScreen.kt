@@ -1,29 +1,33 @@
 package com.nabilbdev.bookfinder.ui.screens
 
 import androidx.compose.runtime.Composable
-import com.nabilbdev.bookfinder.model.BookResponse
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import com.nabilbdev.bookfinder.data.remote.model.BookResponse
+import com.nabilbdev.bookfinder.data.remote.model.Item
 import com.nabilbdev.bookfinder.ui.screens.animations.ErrorComponent
 import com.nabilbdev.bookfinder.ui.screens.animations.LoadingComponent
 import com.nabilbdev.bookfinder.ui.screens.multiplebooks.BookCollectionScreen
 import com.nabilbdev.bookfinder.ui.screens.singlebook.BookInfoScreen
+import kotlinx.serialization.SerializationException
+import okio.IOException
+import retrofit2.HttpException
 
 @Composable
 fun HomeScreen(
-    bookFinderUiState: BookFinderUiState,
+    bookItemsList: LazyPagingItems<Item>,
 ) {
-    when (bookFinderUiState) {
-        is BookFinderUiState.Success -> {
-            ManyBookSuccessScreen(
-                response = bookFinderUiState.response,
-            )
-        }
-
-        is BookFinderUiState.Loading -> {
-            LoadingComponent()
-        }
-
-        is BookFinderUiState.Error -> {
-            ErrorComponent(message = bookFinderUiState.message)
+    when (bookItemsList.loadState.refresh) {
+        is LoadState.NotLoading -> ManyBookSuccessScreen(bookItemsList = bookItemsList)
+        is LoadState.Loading -> LoadingComponent()
+        is LoadState.Error -> {
+            val errorMessage = when ((bookItemsList.loadState.refresh as LoadState.Error).error) {
+                is IOException -> "Oops! Please, check your network!"
+                is HttpException -> "Oops! Something went wrong with the server!"
+                is SerializationException -> "Oops! Something messing with the data!"
+                else -> "An unexpected error occurred."
+            }
+            ErrorComponent(errorMessage) // Pass the error message to your ErrorComponent
         }
     }
 }
@@ -31,13 +35,13 @@ fun HomeScreen(
 
 @Composable
 fun ManyBookSuccessScreen(
-    response: BookResponse
+    bookItemsList: LazyPagingItems<Item>,
 ) {
-    val numberOfBooks = response.totalItems
+    val numberOfBooks = bookItemsList.itemCount
 
     BookCollectionScreen(
         numberOfBooks = numberOfBooks,
-        bookItems = response
+        bookItems = bookItemsList
     )
 }
 

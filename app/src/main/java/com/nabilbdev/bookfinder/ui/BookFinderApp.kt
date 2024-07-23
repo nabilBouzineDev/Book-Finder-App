@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.nabilbdev.bookfinder.R
 import com.nabilbdev.bookfinder.ui.screens.BookFinderViewModel
 import com.nabilbdev.bookfinder.ui.screens.HomeScreen
@@ -66,6 +67,9 @@ fun BookFinderApp(
         val bookFinderViewModel: BookFinderViewModel = viewModel(
             factory = BookFinderViewModel.Factory
         )
+
+        val bookItemsList = bookFinderViewModel.bookFlow.collectAsLazyPagingItems()
+
         Column(modifier = modifier.padding(it)) {
             SearchBar(
                 modifier = Modifier
@@ -84,7 +88,6 @@ fun BookFinderApp(
                             searchHistory.add(0, query)
 
                         bookFinderViewModel.takeUserQuery(query)
-                        bookFinderViewModel.getBooksInfoByQuery()
                         bookFinderViewModel.showHomeScreen()
                         active = false
                     }
@@ -160,8 +163,11 @@ fun BookFinderApp(
 
         if (!active) {
             when {
-                bookFinderViewModel.isShowHomeScreen ->
-                    HomeScreen(bookFinderUiState = bookFinderViewModel.bookFinderUiState)
+                bookFinderViewModel.isShowHomeScreen -> {
+                    HomeScreen(
+                        bookItemsList = bookItemsList
+                    )
+                }
 
                 else -> SearchingComponent()
             }

@@ -1,8 +1,8 @@
-package com.nabilbdev.bookfinder.network
+package com.nabilbdev.bookfinder.data.remote.network
 
 import com.nabilbdev.bookfinder.BuildConfig
-import com.nabilbdev.bookfinder.model.BookResponse
-import com.nabilbdev.bookfinder.model.Item
+import com.nabilbdev.bookfinder.data.remote.model.BookResponse
+import com.nabilbdev.bookfinder.data.remote.model.Item
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

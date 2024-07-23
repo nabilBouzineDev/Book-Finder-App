@@ -1,7 +1,6 @@
 package com.nabilbdev.bookfinder.ui.screens
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -10,87 +9,43 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import coil.network.HttpException
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.nabilbdev.bookfinder.BookFinderApplication
-import com.nabilbdev.bookfinder.data.BookFinderRepository
-import com.nabilbdev.bookfinder.model.BookResponse
-import kotlinx.coroutines.launch
-import kotlinx.serialization.SerializationException
-import okio.IOException
-
-sealed interface BookFinderUiState {
-
-    data class Success(
-        val response: BookResponse
-    ) : BookFinderUiState
-
-    data object Loading : BookFinderUiState
-    data class Error(
-        val message: String
-    ) : BookFinderUiState
-}
+import com.nabilbdev.bookfinder.data.remote.model.Item
+import com.nabilbdev.bookfinder.data.remote.pagination.BooksPagingSource
+import com.nabilbdev.bookfinder.data.repository.BookFinderRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 
 class BookFinderViewModel(private val bookFinderRepository: BookFinderRepository) : ViewModel() {
-
-    var bookFinderUiState: BookFinderUiState by mutableStateOf(BookFinderUiState.Loading)
-        private set
 
     var isShowHomeScreen: Boolean by mutableStateOf(false)
         private set
 
-    var takeUserInputQuery: String by mutableStateOf("")
-        private set
-
-    var pageNumber: Int by mutableIntStateOf(0)
-        private set
+    private val _userInputQuery = MutableStateFlow("")
 
     fun takeUserQuery(query: String) {
-        takeUserInputQuery = query
+        _userInputQuery.value = query
     }
 
     fun showHomeScreen() {
         isShowHomeScreen = true
     }
 
-    fun getBooksInfoByQuery() {
-        viewModelScope.launch {
-            bookFinderUiState = BookFinderUiState.Loading
-            bookFinderUiState = try {
-                launch {
-
-                }
-
-                // Call 2 request for more than 10 books items in Google Book API
-                val firstBookItems = bookFinderRepository.getAllVolumes(
-                    query = takeUserInputQuery,
-                    startIndex = pageNumber
-                )
-                val secondBookItems = bookFinderRepository.getAllVolumes(
-                    query = takeUserInputQuery,
-                    startIndex = pageNumber + 10
-                )
-
-                BookFinderUiState.Success(
-                    BookResponse(
-                        kind = firstBookItems.kind,
-                        items = firstBookItems.items + secondBookItems.items,
-                        totalItems = firstBookItems.totalItems + secondBookItems.totalItems
-                    )
-                )
-            } catch (e: IOException) {
-                BookFinderUiState.Error(
-                    message = "Oops! Please, check your network!"
-                )
-            } catch (e: HttpException) {
-                BookFinderUiState.Error(
-                    message = "Oops! Something went wrong!"
-                )
-            } catch (e: SerializationException) {
-                BookFinderUiState.Error(
-                    message = "Oops! Something is messing!"
-                )
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val bookFlow: Flow<PagingData<Item>> = _userInputQuery.flatMapLatest { query ->
+        Pager(
+            config = PagingConfig(pageSize = 10, enablePlaceholders = false),
+            pagingSourceFactory = {
+                BooksPagingSource(bookFinderRepository, query)
             }
-        }
+        ).flow
+            .cachedIn(viewModelScope)
     }
 
     companion object {

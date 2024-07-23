@@ -1,4 +1,4 @@
-package com.nabilbdev.bookfinder.model
+package com.nabilbdev.bookfinder.data.remote.model
 
 import kotlinx.serialization.Serializable
 

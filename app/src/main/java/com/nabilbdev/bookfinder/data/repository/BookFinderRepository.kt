@@ -1,8 +1,8 @@
-package com.nabilbdev.bookfinder.data
+package com.nabilbdev.bookfinder.data.repository
 
-import com.nabilbdev.bookfinder.model.BookResponse
-import com.nabilbdev.bookfinder.model.Item
-import com.nabilbdev.bookfinder.network.BookFinderApiService
+import com.nabilbdev.bookfinder.data.remote.model.BookResponse
+import com.nabilbdev.bookfinder.data.remote.model.Item
+import com.nabilbdev.bookfinder.data.remote.network.BookFinderApiService
 
 interface BookFinderRepository {
     /** Fetches a list of volumes or a specific volume from [BookFinderApiService] */

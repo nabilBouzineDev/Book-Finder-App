@@ -1,7 +1,7 @@
-package com.nabilbdev.bookfinder.data
+package com.nabilbdev.bookfinder.data.repository
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.nabilbdev.bookfinder.network.BookFinderApiService
+import com.nabilbdev.bookfinder.data.remote.network.BookFinderApiService
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
