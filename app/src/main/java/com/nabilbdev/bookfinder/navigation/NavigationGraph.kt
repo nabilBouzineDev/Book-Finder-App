@@ -12,23 +12,26 @@ import com.nabilbdev.bookfinder.ui.screens.BookFinderViewModel
 import com.nabilbdev.bookfinder.ui.screens.HomeScreen
 import com.nabilbdev.bookfinder.ui.screens.detail.DetailScreen
 import com.nabilbdev.bookfinder.ui.screens.search.SearchScreen
+import com.nabilbdev.bookfinder.ui.screens.search.SearchViewModel
 
 @Composable
 fun MyNavHost(
     bookFinderViewModel: BookFinderViewModel,
+    searchViewModel: SearchViewModel,
     bookItemsList: LazyPagingItems<Item>,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController()
 ) {
     NavHost(navController = navController, startDestination = Search, modifier = modifier) {
         composable<Search> {
-            SearchScreen { query ->
+            SearchScreen(searchViewModel = searchViewModel) { query ->
                 bookFinderViewModel.takeUserQuery(query)
                 navController.navigate(Home)
             }
         }
         composable<Home> {
             HomeScreen(
+                searchViewModel = searchViewModel,
                 bookItemsList = bookItemsList,
                 onSearchClick = { query ->
                     bookFinderViewModel.takeUserQuery(query)

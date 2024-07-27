@@ -15,6 +15,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.nabilbdev.bookfinder.R
 import com.nabilbdev.bookfinder.navigation.MyNavHost
 import com.nabilbdev.bookfinder.ui.screens.BookFinderViewModel
+import com.nabilbdev.bookfinder.ui.screens.search.SearchViewModel
 
 @Composable
 fun BookFinderApp(
@@ -24,12 +25,18 @@ fun BookFinderApp(
     val bookFinderViewModel: BookFinderViewModel = viewModel(
         factory = BookFinderViewModel.Factory
     )
+    val searchViewModel: SearchViewModel = viewModel()
     val bookItemsList = bookFinderViewModel.bookFlow.collectAsLazyPagingItems()
 
     Scaffold(
         topBar = { BookTopAppBar(bookFinderViewModel) }
     ) { innerPadding ->
-        MyNavHost(bookFinderViewModel, bookItemsList, modifier.padding(innerPadding))
+        MyNavHost(
+            bookFinderViewModel,
+            searchViewModel,
+            bookItemsList,
+            modifier.padding(innerPadding)
+        )
     }
 }
 

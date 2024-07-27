@@ -8,9 +8,7 @@ interface BookFinderRepository {
     /** Fetches a list of volumes or a specific volume from [BookFinderApiService] */
     suspend fun getAllVolumes(query: String, startIndex: Int): BookResponse
 
-    suspend fun getSpecificVolumeInfo(
-        id: String,
-    ): Item
+    suspend fun getSpecificVolumeInfo(id: String): Item
 }
 
 

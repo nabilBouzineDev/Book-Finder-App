@@ -39,7 +39,7 @@ fun SingleBookSuccessScreen(
         image = book.imageLinks.thumbnail,
         title = book.title,
         authors = book.authors,
-        category = book.categories[0],
+        category = book.categories[0].split(" / ")[0],
         description = book.description,
         previewLink = book.previewLink,
         publishedDate = book.publishedDate,

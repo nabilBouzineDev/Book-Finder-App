@@ -1,6 +1,5 @@
 package com.nabilbdev.bookfinder.ui.screens
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.paging.LoadState
@@ -10,12 +9,14 @@ import com.nabilbdev.bookfinder.ui.screens.animations.ErrorComponent
 import com.nabilbdev.bookfinder.ui.screens.animations.LoadingComponent
 import com.nabilbdev.bookfinder.ui.screens.home.BookCollectionScreen
 import com.nabilbdev.bookfinder.ui.screens.search.MySearchBar
+import com.nabilbdev.bookfinder.ui.screens.search.SearchViewModel
 import kotlinx.serialization.SerializationException
 import okio.IOException
 import retrofit2.HttpException
 
 @Composable
 fun HomeScreen(
+    searchViewModel: SearchViewModel,
     bookItemsList: LazyPagingItems<Item>,
     onBookCardClick: (String) -> Unit,
     onSearchClick: (String) -> Unit
@@ -23,7 +24,10 @@ fun HomeScreen(
     when (bookItemsList.loadState.refresh) {
         is LoadState.NotLoading -> {
             Column {
-                MySearchBar(onSearchClick = onSearchClick)
+                MySearchBar(
+                    searchViewModel = searchViewModel,
+                    onSearchClick = onSearchClick
+                )
                 ManyBookSuccessScreen(
                     onBookCardClick = onBookCardClick,
                     bookItemsList = bookItemsList

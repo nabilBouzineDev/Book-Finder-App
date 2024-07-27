@@ -36,6 +36,8 @@ fun ExpandableText(
     var isExpanded by remember { mutableStateOf(false) }
     var hasOverflow by remember { mutableStateOf(false) }
 
+    val updatedText = if (containsHtml(text)) htmlTextFilter(text) else text
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -45,7 +47,7 @@ fun ExpandableText(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = text,
+            text = updatedText,
             maxLines = if (isExpanded) Int.MAX_VALUE else maxLines,
             overflow = TextOverflow.Ellipsis,
             onTextLayout = { textLayoutResult ->
@@ -59,6 +61,7 @@ fun ExpandableText(
             modifier = Modifier
                 .weight(1f)
         )
+
         // Show [See more] if text has overflow
         // Show [See less] if text is expanded
         if (hasOverflow || isExpanded) {
@@ -78,4 +81,19 @@ fun ExpandableText(
             )
         }
     }
+}
+
+/** [containsHtml]:
+ * A function to check for HTML tags
+ * */
+fun containsHtml(text: String): Boolean {
+    return text.contains(Regex("<.*?>"))
+}
+
+/**[htmlTextFilter]:
+ * A function responsible to properly filter descriptions from html tags.
+ * */
+fun htmlTextFilter(text: String): String {
+    val plainText = text.replace(Regex("<.*?>"), "")
+    return plainText
 }

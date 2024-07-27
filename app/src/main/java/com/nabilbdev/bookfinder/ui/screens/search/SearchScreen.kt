@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -34,10 +33,11 @@ import com.nabilbdev.bookfinder.ui.theme.darkCard
 
 @Composable
 fun SearchScreen(
+    searchViewModel: SearchViewModel,
     onSearchClick: (String) -> Unit
 ) {
     Column {
-        MySearchBar(onSearchClick = onSearchClick)
+        MySearchBar(searchViewModel = searchViewModel, onSearchClick = onSearchClick)
         SearchingComponent()
     }
 }
@@ -45,6 +45,7 @@ fun SearchScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MySearchBar(
+    searchViewModel: SearchViewModel,
     modifier: Modifier = Modifier,
     onSearchClick: (String) -> Unit = {}
 ) {
@@ -54,11 +55,6 @@ fun MySearchBar(
     // Indicates if the user clicks on search bar component
     var active by remember {
         mutableStateOf(false)
-    }
-
-    // list of history search(usually fetched from db)
-    val searchHistory = remember {
-        mutableStateListOf<String>()
     }
 
     SearchBar(
@@ -73,9 +69,9 @@ fun MySearchBar(
         onSearch = { query ->
             // When user clicks search button
             if (query.isNotBlank()) {
-                // avoid duplicating history
-                if (!searchHistory.contains(query))
-                    searchHistory.add(0, query)
+
+                // Add it to the search history
+                searchViewModel.addSearchQuery(query)
 
                 // fetch data to the home screen
                 onSearchClick(query)
@@ -118,7 +114,7 @@ fun MySearchBar(
             )
         )
     ) {
-        searchHistory.forEach { history ->
+        searchViewModel.searchHistory.forEach { history ->
             Row(
                 modifier = Modifier
                     .padding(14.dp)
@@ -135,13 +131,13 @@ fun MySearchBar(
             }
             HorizontalDivider()
         }
-        if (searchHistory.isNotEmpty()) {
+        if (searchViewModel.searchHistory.isNotEmpty()) {
             Text(
                 modifier = Modifier
                     .padding(all = 14.dp)
                     .fillMaxWidth()
                     .clickable {
-                        searchHistory.clear()
+                        searchViewModel.clearHistory()
                     },
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodySmall,

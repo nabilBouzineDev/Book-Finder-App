@@ -161,23 +161,3 @@ fun BookInfoContent(
         )
     }
 }
-
-@Preview(showSystemUi = true)
-@Composable
-fun BookInfoContentPreview() {
-    BookFinderTheme {
-        BookInfoScreen(
-            image = "Image here",
-            title = """
-                Book title longer longer longer longer longer longer longer longer longer longer 
-                Book title longer longer longer longer longer longer longer longer longer longer
-                Book title longer longer longer longer longer longer longer longer longer longer
-            """.trimIndent(),
-            authors = listOf("Author 1"),
-            category = "Science",
-            description = "This is some sort of mock unreal fake description of this fake book",
-            previewLink = "https://www.google.com",
-            publishedDate = "2020"
-        )
-    }
-}
