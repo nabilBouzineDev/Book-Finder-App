@@ -2,6 +2,9 @@ package com.nabilbdev.bookfinder.ui.screens.detail
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,14 +25,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.nabilbdev.bookfinder.ui.components.ExpandableText
-import com.nabilbdev.bookfinder.ui.theme.BookFinderTheme
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun BookInfoScreen(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    bookId: String,
     image: String,
     title: String,
     publishedDate: String,
@@ -49,6 +54,9 @@ fun BookInfoScreen(
 
     ) {
         BookInfoContent(
+            sharedTransitionScope = sharedTransitionScope,
+            animatedVisibilityScope = animatedVisibilityScope,
+            bookId = bookId,
             image = image,
             title = title,
             authors = authors,
@@ -132,8 +140,12 @@ fun BookDescription(
 }
 
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun BookInfoContent(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    bookId: String,
     image: String,
     title: String,
     publishedDate: String,
@@ -148,6 +160,9 @@ fun BookInfoContent(
         verticalArrangement = Arrangement.Top
     ) {
         BookImageCard(
+            sharedTransitionScope = sharedTransitionScope,
+            animatedVisibilityScope = animatedVisibilityScope,
+            bookId = bookId,
             image = image,
             modifier = Modifier
                 .zIndex(1f) // Make sure image above.

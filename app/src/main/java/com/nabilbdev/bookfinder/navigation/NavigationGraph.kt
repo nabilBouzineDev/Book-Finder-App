@@ -1,5 +1,7 @@
 package com.nabilbdev.bookfinder.navigation
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -14,6 +16,7 @@ import com.nabilbdev.bookfinder.ui.screens.detail.DetailScreen
 import com.nabilbdev.bookfinder.ui.screens.search.SearchScreen
 import com.nabilbdev.bookfinder.ui.screens.search.SearchViewModel
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MyNavHost(
     bookFinderViewModel: BookFinderViewModel,
@@ -22,35 +25,41 @@ fun MyNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController()
 ) {
-    NavHost(navController = navController, startDestination = Search, modifier = modifier) {
-        composable<Search> {
-            SearchScreen(searchViewModel = searchViewModel) { query ->
-                bookFinderViewModel.takeUserQuery(query)
-                navController.navigate(Home)
-            }
-        }
-        composable<Home> {
-            HomeScreen(
-                searchViewModel = searchViewModel,
-                bookItemsList = bookItemsList,
-                onSearchClick = { query ->
+    SharedTransitionLayout {
+        NavHost(navController = navController, startDestination = Search, modifier = modifier) {
+            composable<Search> {
+                SearchScreen(searchViewModel = searchViewModel) { query ->
                     bookFinderViewModel.takeUserQuery(query)
-                },
-                onBookCardClick = { id ->
-                    bookFinderViewModel.getSingleBook(bookId = id)
-                    navController.navigate(Detail)
-                    bookFinderViewModel.isDetailShownScreen.value = true
+                    navController.navigate(Home)
                 }
-            )
-        }
-        composable<Detail> {
-            DetailScreen(
-                bookFinderUiState = bookFinderViewModel.bookFinderUiState,
-                onNavigateUp = {
-                    navController.navigateUp()
-                    bookFinderViewModel.isDetailShownScreen.value = false
-                }
-            )
+            }
+            composable<Home> {
+                HomeScreen(
+                    searchViewModel = searchViewModel,
+                    bookItemsList = bookItemsList,
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this,
+                    onSearchClick = { query ->
+                        bookFinderViewModel.takeUserQuery(query)
+                    },
+                    onBookCardClick = { id ->
+                        bookFinderViewModel.getSingleBook(bookId = id)
+                        navController.navigate(Detail)
+                        bookFinderViewModel.isDetailShownScreen.value = true
+                    }
+                )
+            }
+            composable<Detail> {
+                DetailScreen(
+                    bookFinderUiState = bookFinderViewModel.bookFinderUiState,
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this,
+                    onNavigateUp = {
+                        navController.navigateUp()
+                        bookFinderViewModel.isDetailShownScreen.value = false
+                    }
+                )
+            }
         }
     }
 }

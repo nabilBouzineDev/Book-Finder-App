@@ -1,5 +1,8 @@
 package com.nabilbdev.bookfinder.ui.screens
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.paging.LoadState
@@ -14,10 +17,13 @@ import kotlinx.serialization.SerializationException
 import okio.IOException
 import retrofit2.HttpException
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun HomeScreen(
     searchViewModel: SearchViewModel,
     bookItemsList: LazyPagingItems<Item>,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onBookCardClick: (String) -> Unit,
     onSearchClick: (String) -> Unit
 ) {
@@ -29,8 +35,10 @@ fun HomeScreen(
                     onSearchClick = onSearchClick
                 )
                 ManyBookSuccessScreen(
-                    onBookCardClick = onBookCardClick,
-                    bookItemsList = bookItemsList
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    bookItemsList = bookItemsList,
+                    onBookCardClick = onBookCardClick
                 )
             }
         }
@@ -49,16 +57,21 @@ fun HomeScreen(
 }
 
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun ManyBookSuccessScreen(
-    onBookCardClick: (String) -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     bookItemsList: LazyPagingItems<Item>,
+    onBookCardClick: (String) -> Unit,
 ) {
     val numberOfBooks = bookItemsList.itemCount
 
     BookCollectionScreen(
-        onBookCardClick = onBookCardClick,
+        sharedTransitionScope = sharedTransitionScope,
+        animatedVisibilityScope = animatedVisibilityScope,
+        bookItems = bookItemsList,
         numberOfBooks = numberOfBooks,
-        bookItems = bookItemsList
+        onBookCardClick = onBookCardClick
     )
 }

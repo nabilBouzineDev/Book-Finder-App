@@ -1,5 +1,8 @@
 package com.nabilbdev.bookfinder.ui.screens.detail
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -91,30 +94,40 @@ fun CategoryCard(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun BookImageCard(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    bookId: String,
     image: String,
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier
-            .width(150.dp)
-            .aspectRatio(9f / 16f),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(image)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = null,
-                alignment = Alignment.Center,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-            )
+    with(sharedTransitionScope) {
+        Card(
+            modifier = modifier
+                .width(150.dp)
+                .aspectRatio(9f / 16f),
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(image)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = null,
+                    alignment = Alignment.Center,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .sharedElement(
+                            state = sharedTransitionScope.rememberSharedContentState(key = "thumbnail/${bookId}"),
+                            animatedVisibilityScope = animatedVisibilityScope
+                        )
+                        .fillMaxSize()
+                )
+            }
         }
     }
 }
