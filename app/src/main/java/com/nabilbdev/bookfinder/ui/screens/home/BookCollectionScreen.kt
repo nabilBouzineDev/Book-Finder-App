@@ -1,4 +1,4 @@
-package com.nabilbdev.bookfinder.ui.screens.multiplebooks
+package com.nabilbdev.bookfinder.ui.screens.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +29,7 @@ import com.nabilbdev.bookfinder.data.remote.model.Item
 
 @Composable
 fun BookCollectionScreen(
+    onBookCardClick: (String) -> Unit,
     numberOfBooks: Int,
     bookItems: LazyPagingItems<Item>,
     modifier: Modifier = Modifier
@@ -36,12 +37,13 @@ fun BookCollectionScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(top = 144.dp, bottom = 16.dp)
+            .padding(bottom = 16.dp)
     ) {
         AboutBooks(
             numberOfBooks = numberOfBooks,
         )
         BookListContent(
+            onBookCardClick = onBookCardClick,
             books = bookItems,
         )
     }
@@ -49,6 +51,7 @@ fun BookCollectionScreen(
 
 @Composable
 fun BookListContent(
+    onBookCardClick: (String) -> Unit,
     books: LazyPagingItems<Item>,
     modifier: Modifier = Modifier
 ) {
@@ -74,6 +77,7 @@ fun BookListContent(
                     val book = books[bookIndex]
                     if (book != null) {
                         BookThumbnail(
+                            onBookCardClick = { onBookCardClick(book.id) },
                             thumbnail = book.volumeInfo.imageLinks.thumbnail
                         )
                     }
@@ -85,6 +89,7 @@ fun BookListContent(
 
 @Composable
 fun BookThumbnail(
+    onBookCardClick: () -> Unit,
     thumbnail: String,
     modifier: Modifier = Modifier
 ) {
@@ -93,7 +98,8 @@ fun BookThumbnail(
             .width(100.dp)
             .aspectRatio(9f / 16f),
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        onClick = onBookCardClick
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             AsyncImage(

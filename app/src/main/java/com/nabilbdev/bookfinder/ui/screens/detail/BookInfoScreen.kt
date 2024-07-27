@@ -1,4 +1,4 @@
-package com.nabilbdev.bookfinder.ui.screens.singlebook
+package com.nabilbdev.bookfinder.ui.screens.detail
 
 import android.content.Intent
 import android.net.Uri
@@ -25,8 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.nabilbdev.bookfinder.ui.theme.BookFinderTheme
 import com.nabilbdev.bookfinder.ui.components.ExpandableText
+import com.nabilbdev.bookfinder.ui.theme.BookFinderTheme
 
 @Composable
 fun BookInfoScreen(
@@ -150,9 +150,8 @@ fun BookInfoContent(
         BookImageCard(
             image = image,
             modifier = Modifier
-                .padding(top = 8.dp)
                 .zIndex(1f) // Make sure image above.
-                .offset(y = 100.dp)
+                .offset(y = 90.dp)
         )
         BookDetailsCard(
             title = title,

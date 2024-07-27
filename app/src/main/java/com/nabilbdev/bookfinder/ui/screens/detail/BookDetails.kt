@@ -1,4 +1,4 @@
-package com.nabilbdev.bookfinder.ui.screens.singlebook
+package com.nabilbdev.bookfinder.ui.screens.detail
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues

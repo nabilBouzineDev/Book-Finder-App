@@ -21,20 +21,36 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.launch
+import kotlinx.serialization.SerializationException
+import okio.IOException
+import retrofit2.HttpException
+
+sealed interface BookFinderUiState {
+
+    data class Success(
+        val response: Item
+    ) : BookFinderUiState
+
+    data object Loading : BookFinderUiState
+    data class Error(
+        val message: String
+    ) : BookFinderUiState
+}
 
 class BookFinderViewModel(private val bookFinderRepository: BookFinderRepository) : ViewModel() {
 
-    var isShowHomeScreen: Boolean by mutableStateOf(false)
+
+    var bookFinderUiState: BookFinderUiState by mutableStateOf(BookFinderUiState.Loading)
         private set
+
+    private val _isDetailShownScreen = mutableStateOf(false)
+    var isDetailShownScreen = _isDetailShownScreen
 
     private val _userInputQuery = MutableStateFlow("")
 
     fun takeUserQuery(query: String) {
         _userInputQuery.value = query
-    }
-
-    fun showHomeScreen() {
-        isShowHomeScreen = true
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -46,6 +62,32 @@ class BookFinderViewModel(private val bookFinderRepository: BookFinderRepository
             }
         ).flow
             .cachedIn(viewModelScope)
+    }
+
+    fun getSingleBook(bookId: String) {
+        viewModelScope.launch {
+            bookFinderUiState = BookFinderUiState.Loading
+            try {
+                val book = bookFinderRepository.getSpecificVolumeInfo(bookId)
+                bookFinderUiState = BookFinderUiState.Success(book)
+            } catch (e: IOException) {
+                BookFinderUiState.Error(
+                    message = "Oops! Please, check your network!"
+                )
+            } catch (e: HttpException) {
+                BookFinderUiState.Error(
+                    message = "Oops! Something went wrong with the server!"
+                )
+            } catch (e: SerializationException) {
+                BookFinderUiState.Error(
+                    message = "Oops! Something messing with the data!"
+                )
+            } catch (e: Exception) {
+                BookFinderUiState.Error(
+                    message = "An unexpected error occurred."
+                )
+            }
+        }
     }
 
     companion object {
