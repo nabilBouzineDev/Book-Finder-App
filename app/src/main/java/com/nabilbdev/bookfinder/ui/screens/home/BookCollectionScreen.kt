@@ -72,10 +72,12 @@ fun BookListContent(
             .padding(start = 16.dp, end = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Divide the items into groups of 10
         items(books.itemCount / 10) { rowIndex ->
-            val startIndex = rowIndex * 10
-            val endIndex = minOf(startIndex + 10, books.itemCount)
+            val startIndex = rowIndex * 10 // We ensure that each row starts at the correct index
+            val endIndex = minOf(
+                startIndex + 10,
+                books.itemCount
+            ) // minOf in case if we've a list less than 10 books
 
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
@@ -114,7 +116,7 @@ fun BookThumbnail(
     with(sharedTransitionScope) {
         Card(
             modifier = modifier
-                .width(100.dp)
+                .width(110.dp)
                 .aspectRatio(9f / 16f),
             shape = RoundedCornerShape(16.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),

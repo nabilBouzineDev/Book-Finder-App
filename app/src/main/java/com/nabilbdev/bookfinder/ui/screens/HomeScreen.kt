@@ -4,10 +4,14 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.nabilbdev.bookfinder.data.remote.model.Item
+import com.nabilbdev.bookfinder.ui.components.SearchAndHomeScreenTopAppBar
 import com.nabilbdev.bookfinder.ui.screens.animations.ErrorComponent
 import com.nabilbdev.bookfinder.ui.screens.animations.LoadingComponent
 import com.nabilbdev.bookfinder.ui.screens.home.BookCollectionScreen
@@ -24,22 +28,27 @@ fun HomeScreen(
     bookItemsList: LazyPagingItems<Item>,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
+    modifier: Modifier = Modifier,
     onBookCardClick: (String) -> Unit,
     onSearchClick: (String) -> Unit
 ) {
     when (bookItemsList.loadState.refresh) {
         is LoadState.NotLoading -> {
-            Column {
-                MySearchBar(
-                    searchViewModel = searchViewModel,
-                    onSearchClick = onSearchClick
-                )
-                ManyBookSuccessScreen(
-                    sharedTransitionScope = sharedTransitionScope,
-                    animatedVisibilityScope = animatedVisibilityScope,
-                    bookItemsList = bookItemsList,
-                    onBookCardClick = onBookCardClick
-                )
+            Scaffold(
+                topBar = { SearchAndHomeScreenTopAppBar() }
+            ) { innerPadding ->
+                Column(modifier = modifier.padding(innerPadding)) {
+                    MySearchBar(
+                        searchViewModel = searchViewModel,
+                        onSearchClick = onSearchClick
+                    )
+                    ManyBookSuccessScreen(
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        bookItemsList = bookItemsList,
+                        onBookCardClick = onBookCardClick
+                    )
+                }
             }
         }
 

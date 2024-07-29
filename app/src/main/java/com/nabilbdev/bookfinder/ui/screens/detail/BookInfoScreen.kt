@@ -1,7 +1,10 @@
 package com.nabilbdev.bookfinder.ui.screens.detail
 
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
@@ -22,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -89,18 +93,12 @@ fun VisitBookButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary
         ),
-        onClick = {
-            val intent = Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse(previewLink)
-            )
-            context.startActivity(intent)
-        }
+        onClick = { openBookPreview(context, previewLink) }
     ) {
         Text(
             text = "Visit Book",
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.secondary,
+            color = Color.White,
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(
                 top = 4.dp,
@@ -109,6 +107,18 @@ fun VisitBookButton(
                 end = 8.dp
             )
         )
+    }
+}
+
+fun openBookPreview(context: Context, url: String) {
+    try {
+        val intent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse(url)
+        )
+        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        Toast.makeText(context, "No browser app found", Toast.LENGTH_SHORT).show()
     }
 }
 

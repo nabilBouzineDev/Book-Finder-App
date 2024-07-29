@@ -3,7 +3,6 @@ package com.nabilbdev.bookfinder.navigation
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,11 +21,10 @@ fun MyNavHost(
     bookFinderViewModel: BookFinderViewModel,
     searchViewModel: SearchViewModel,
     bookItemsList: LazyPagingItems<Item>,
-    modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController()
 ) {
     SharedTransitionLayout {
-        NavHost(navController = navController, startDestination = Search, modifier = modifier) {
+        NavHost(navController = navController, startDestination = Search) {
             composable<Search> {
                 SearchScreen(searchViewModel = searchViewModel) { query ->
                     bookFinderViewModel.takeUserQuery(query)
@@ -45,7 +43,6 @@ fun MyNavHost(
                     onBookCardClick = { id ->
                         bookFinderViewModel.getSingleBook(bookId = id)
                         navController.navigate(Detail)
-                        bookFinderViewModel.isDetailShownScreen.value = true
                     }
                 )
             }
@@ -56,7 +53,6 @@ fun MyNavHost(
                     animatedVisibilityScope = this,
                     onNavigateUp = {
                         navController.navigateUp()
-                        bookFinderViewModel.isDetailShownScreen.value = false
                     }
                 )
             }

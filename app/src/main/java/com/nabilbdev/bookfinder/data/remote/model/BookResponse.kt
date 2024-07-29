@@ -1,5 +1,6 @@
 package com.nabilbdev.bookfinder.data.remote.model
 
+import com.nabilbdev.bookfinder.data.utils.DEFAULT_COVER_URL
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -22,8 +23,8 @@ data class VolumeInfo(
     val categories: List<String> = listOf("Undefined"),
     val description: String = "Description not available",
     val imageLinks: ImageLinks = ImageLinks(
-        smallThumbnail = "Image not found!",
-        thumbnail = "Image not found!"
+        smallThumbnail = DEFAULT_COVER_URL,
+        thumbnail = DEFAULT_COVER_URL
     ),
     val previewLink: String = "Preview not found!",
     val publishedDate: String = "Date not available",

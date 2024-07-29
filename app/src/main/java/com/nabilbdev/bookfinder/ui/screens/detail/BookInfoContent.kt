@@ -106,7 +106,7 @@ fun BookImageCard(
     with(sharedTransitionScope) {
         Card(
             modifier = modifier
-                .width(150.dp)
+                .width(160.dp)
                 .aspectRatio(9f / 16f),
             shape = RoundedCornerShape(16.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)

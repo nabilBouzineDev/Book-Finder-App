@@ -44,9 +44,6 @@ class BookFinderViewModel(private val bookFinderRepository: BookFinderRepository
     var bookFinderUiState: BookFinderUiState by mutableStateOf(BookFinderUiState.Loading)
         private set
 
-    private val _isDetailShownScreen = mutableStateOf(false)
-    var isDetailShownScreen = _isDetailShownScreen
-
     private val _userInputQuery = MutableStateFlow("")
 
     fun takeUserQuery(query: String) {
