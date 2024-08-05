@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="Theme.Bookshelf" parent="android:Theme.Material.NoActionBar">
+        <item name="colorPrimary">@color/lightPrimaryColor</item>
+    </style>
 
-    <style name="Theme.Bookshelf" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.SplashScreen" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/lightPrimaryColor</item>
+        <item name="android:windowBackground">@drawable/splash_background</item>
+    </style>
 </resources>
