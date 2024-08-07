@@ -43,7 +43,7 @@
 1. Clone the repository:
  
 ```
-  git clone https://github.com/nabilBouzineDev/BookFinder.git
+  git clone https://github.com/nabilBouzineDev/Book-Finder-App.git
 ```
 2. Open the project in Android Studio.
 
